@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  font-preview-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: font-preview-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./temp:/usr/src/app/temp
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
