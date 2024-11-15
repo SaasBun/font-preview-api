@@ -27,7 +27,7 @@ class FontService {
       await fs.writeFile(fontPath, fontResponse.data);
       registerFont(fontPath, { family: fontFamily });
 
-      return fontPath;
+      return [fontFamily, fontPath];
     } catch (error) {
       throw new AppError("Failed to download or register font", 500);
     }

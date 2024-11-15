@@ -10,7 +10,7 @@ class ImageService {
    * @param {number} params.fontSize - Font size in pixels
    * @returns {Canvas} Canvas instance with rendered text
    */
-  static createTextImage({ text, isItalic, fontSize }) {
+  static createTextImage({ text, isItalic, fontSize, fontFamily }) {
     const canvas = createCanvas(config.canvas.width, config.canvas.height);
     const ctx = canvas.getContext("2d");
 
@@ -20,7 +20,7 @@ class ImageService {
     // Configure text rendering
     ctx.fillStyle = "black";
     const fontStyle = isItalic ? "italic " : "";
-    ctx.font = `${fontStyle}${fontSize}px CustomFont`;
+    ctx.font = `${fontStyle}${fontSize}px ${fontFamily}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
