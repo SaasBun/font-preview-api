@@ -11,21 +11,36 @@ class ImageService {
    * @returns {Canvas} Canvas instance with rendered text
    */
   static createTextImage({ text, isItalic, fontSize, fontFamily }) {
-    const canvas = createCanvas(config.canvas.width, config.canvas.height);
+    // Create a temporary canvas for measuring text
+    const measureCanvas = createCanvas(1, 1);
+    const measureCtx = measureCanvas.getContext("2d");
+
+    // Configure font for measurement
+    const fontStyle = isItalic ? "italic " : "";
+    measureCtx.font = `${fontStyle}${fontSize}px ${fontFamily}`;
+
+    // Measure text dimensions
+    const metrics = measureCtx.measureText(text);
+
+    // Calculate the actual height (including ascenders and descenders)
+    const actualHeight =
+      metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    const actualWidth = metrics.width;
+
+    // Create the final canvas with exact dimensions
+    const canvas = createCanvas(actualWidth, actualHeight);
     const ctx = canvas.getContext("2d");
 
-    // Clear canvas to transparent background
+    // Clear canvas (although it's new, this ensures transparency)
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Configure text rendering
     ctx.fillStyle = "black";
-    const fontStyle = isItalic ? "italic " : "";
     ctx.font = `${fontStyle}${fontSize}px ${fontFamily}`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+    ctx.textBaseline = "alphabetic";
 
-    // Draw text
-    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+    // Draw text at the baseline position
+    ctx.fillText(text, 0, metrics.actualBoundingBoxAscent);
 
     return canvas;
   }
